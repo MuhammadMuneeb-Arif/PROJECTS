@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cairn — Coffee gear and beans, brewed with intention</title>
+<meta name="description" content="Hand-picked pour-over gear and small-batch, direct-traded coffee beans.">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink: '#211C16',
+          parchment: '#E7E2D3',
+          cloud: '#FAF7EF',
+          moss: { DEFAULT: '#47593A', tint: '#DFE4D3' },
+          brass: { DEFAULT: '#A47B3F', tint: '#ECE0C8' },
+          rust:  { DEFAULT: '#8C4A3A', tint: '#EBD9CD' },
+        },
+        fontFamily: {
+          display: ['"Bricolage Grotesque"', 'sans-serif'],
+          sans: ['Inter', 'sans-serif'],
+          mono: ['"IBM Plex Mono"', 'monospace'],
+        }
+      }
+    }
+  }
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { -webkit-tap-highlight-color: transparent; }
+  body { font-family: 'Inter', sans-serif; }
+  :focus-visible { outline: 2px solid #47593A; outline-offset: 2px; border-radius: 2px; }
+  .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+  @keyframes drip-fall {
+    0%   { transform: translateY(0);   opacity: 0; }
+    8%   { opacity: 1; }
+    62%  { transform: translateY(58px); opacity: 1; }
+    78%  { transform: translateY(62px); opacity: 0; }
+    100% { transform: translateY(0);   opacity: 0; }
+  }
+  @keyframes ripple {
+    0%, 60% { opacity: 0; transform: scale(0.3); }
+    72%  { opacity: 0.5; transform: scale(1); }
+    88%  { opacity: 0; transform: scale(1.6); }
+    100% { opacity: 0; transform: scale(1.6); }
+  }
+  @keyframes steam-rise {
+    0%   { transform: translateY(0) scaleX(1); opacity: 0; }
+    25%  { opacity: 0.45; }
+    100% { transform: translateY(-26px) scaleX(1.4); opacity: 0; }
+  }
+  .drip-drop { animation: drip-fall 2.4s ease-in infinite; }
+  .drip-ripple { animation: ripple 2.4s ease-out infinite; transform-origin: center; }
+  .steam-1 { animation: steam-rise 3.6s ease-out infinite; }
+  .steam-2 { animation: steam-rise 3.6s ease-out infinite 1.3s; }
+  .steam-3 { animation: steam-rise 3.6s ease-out infinite 2.4s; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .drip-drop, .drip-ripple, .steam-1, .steam-2, .steam-3 { animation: none !important; opacity: 0.5; }
+  }
+</style>
+</head>
+<body class="bg-parchment text-ink antialiased">
+
+<!-- Header -->
+<header class="sticky top-0 z-40 bg-parchment/95 backdrop-blur border-b border-ink/10">
+  <div class="max-w-6xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
+    <a href="#top" class="font-display text-xl font-semibold tracking-tight">Cairn</a>
+
+    <nav class="hidden md:flex items-center gap-8 text-sm">
+      <a href="#shop" onclick="filterProducts('gear')" class="hover:text-moss transition-colors">Gear</a>
+      <a href="#shop" onclick="filterProducts('beans')" class="hover:text-moss transition-colors">Beans</a>
+      <a href="#journal" class="hover:text-moss transition-colors">Journal</a>
+      <a href="#about" class="hover:text-moss transition-colors">About</a>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <button onclick="openCart()" aria-label="Open cart" class="relative w-10 h-10 flex items-center justify-center rounded-full hover:bg-ink/5 transition-colors">
+        <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 8h12l-1 12H7L6 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>
+        </svg>
+        <span id="cart-count" class="hidden absolute -top-1 -right-1 bg-moss text-cloud text-[10px] font-mono w-4 h-4 rounded-full flex items-center justify-center">0</span>
+      </button>
+      <button id="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Open menu" aria-expanded="false" class="md:hidden w-10 h-10 flex items-center justify-center rounded-full hover:bg-ink/5 transition-colors">
+        <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+          <line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div id="mobile-menu" class="hidden md:hidden border-t border-ink/10 bg-parchment px-5 py-4 flex flex-col gap-4 text-sm">
+    <a href="#shop" onclick="filterProducts('gear'); toggleMobileMenu()">Gear</a>
+    <a href="#shop" onclick="filterProducts('beans'); toggleMobileMenu()">Beans</a>
+    <a href="#journal" onclick="toggleMobileMenu()">Journal</a>
+    <a href="#about" onclick="toggleMobileMenu()">About</a>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- Hero -->
+  <section class="max-w-6xl mx-auto px-5 sm:px-8 pt-16 pb-20 grid md:grid-cols-2 gap-12 items-center">
+    <div>
+      <p class="font-mono text-xs uppercase tracking-widest text-moss mb-4">Pour-over gear &amp; single-origin beans</p>
+      <h1 class="font-display text-5xl sm:text-6xl font-semibold leading-[1.05] mb-6">Brewing is<br>the whole point.</h1>
+      <p class="text-ink/70 text-lg leading-relaxed mb-8 max-w-md">Hand-picked gear and small-batch beans for people who'd rather pour than pod. Every bag roasted within ten days of your order.</p>
+      <div class="flex flex-wrap gap-3">
+        <a href="#shop" onclick="filterProducts('gear')" class="bg-ink text-cloud rounded-full px-6 py-3 text-sm font-medium hover:bg-moss transition-colors">Shop gear</a>
+        <a href="#shop" onclick="filterProducts('beans')" class="border border-ink/20 rounded-full px-6 py-3 text-sm font-medium hover:bg-ink/5 transition-colors">Shop beans</a>
+      </div>
+    </div>
+
+    <div class="flex justify-center md:justify-end" aria-hidden="true">
+      <svg viewBox="0 0 200 220" class="w-56 h-64">
+        <g class="steam-1" stroke="#211C16" stroke-opacity="0.35" stroke-width="2" fill="none" stroke-linecap="round"><path d="M84 60 Q90 50 84 42 Q78 34 84 26"/></g>
+        <g class="steam-2" stroke="#211C16" stroke-opacity="0.35" stroke-width="2" fill="none" stroke-linecap="round"><path d="M100 58 Q106 48 100 40 Q94 32 100 24"/></g>
+        <g class="steam-3" stroke="#211C16" stroke-opacity="0.35" stroke-width="2" fill="none" stroke-linecap="round"><path d="M116 60 Q122 50 116 42 Q110 34 116 26"/></g>
+
+        <path d="M68 70 L132 70 L100 130 Z" fill="none" stroke="#211C16" stroke-width="2.5" stroke-linejoin="round"/>
+        <ellipse cx="100" cy="70" rx="32" ry="7" fill="none" stroke="#211C16" stroke-width="2.5"/>
+
+        <circle class="drip-drop" cx="100" cy="138" r="4" fill="#A47B3F"/>
+        <ellipse class="drip-ripple" cx="100" cy="196" rx="16" ry="4" fill="none" stroke="#A47B3F" stroke-width="2"/>
+
+        <path d="M60 150 L60 196 Q60 208 76 208 L124 208 Q140 208 140 196 L140 150 Z" fill="none" stroke="#211C16" stroke-width="2.5"/>
+        <line x1="55" y1="150" x2="145" y2="150" stroke="#211C16" stroke-width="2.5"/>
+        <path d="M140 162 Q158 162 158 176 Q158 190 140 188" fill="none" stroke="#211C16" stroke-width="2.5"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- Value props -->
+  <section class="border-y border-ink/10 bg-cloud">
+    <div class="max-w-6xl mx-auto px-5 sm:px-8 py-12 grid sm:grid-cols-3 gap-8">
+      <div>
+        <svg viewBox="0 0 32 32" class="w-6 h-6 mb-3 text-moss" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="16" cy="16" r="11"/><path d="M16 9v7l5 3"/></svg>
+        <h3 class="font-display font-medium mb-1.5">Roasted weekly</h3>
+        <p class="text-sm text-ink/60 leading-relaxed">Every bag roasted within ten days of your order, never longer.</p>
+      </div>
+      <div>
+        <svg viewBox="0 0 32 32" class="w-6 h-6 mb-3 text-moss" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 5 L26 10 V18 C26 24 21 27 16 28 C11 27 6 24 6 18 V10 Z"/></svg>
+        <h3 class="font-display font-medium mb-1.5">Direct-traded</h3>
+        <p class="text-sm text-ink/60 leading-relaxed">We buy straight from growers, above fair-trade floor prices.</p>
+      </div>
+      <div>
+        <svg viewBox="0 0 32 32" class="w-6 h-6 mb-3 text-moss" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16 L13 23 L26 8"/></svg>
+        <h3 class="font-display font-medium mb-1.5">Dialled-in gear</h3>
+        <p class="text-sm text-ink/60 leading-relaxed">Tested by us, in our own kitchen, before it reaches yours.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Shop -->
+  <section id="shop" class="max-w-6xl mx-auto px-5 sm:px-8 py-20">
+    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-10">
+      <div>
+        <p class="font-mono text-xs uppercase tracking-widest text-moss mb-2">The shop</p>
+        <h2 class="font-display text-3xl font-semibold">Everything for the counter</h2>
+      </div>
+      <div class="flex gap-2 flex-wrap">
+        <button data-filter="all" onclick="filterProducts('all')" class="filter-tab text-xs font-medium rounded-full px-4 py-2 bg-ink text-cloud transition-colors">All</button>
+        <button data-filter="gear" onclick="filterProducts('gear')" class="filter-tab text-xs font-medium rounded-full px-4 py-2 text-ink/60 border border-ink/15 transition-colors">Gear</button>
+        <button data-filter="beans" onclick="filterProducts('beans')" class="filter-tab text-xs font-medium rounded-full px-4 py-2 text-ink/60 border border-ink/15 transition-colors">Beans</button>
+        <button data-filter="accessories" onclick="filterProducts('accessories')" class="filter-tab text-xs font-medium rounded-full px-4 py-2 text-ink/60 border border-ink/15 transition-colors">Accessories</button>
+      </div>
+    </div>
+
+    <div id="product-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+  </section>
+
+  <!-- Journal -->
+  <section id="journal" class="bg-cloud border-y border-ink/10">
+    <div class="max-w-6xl mx-auto px-5 sm:px-8 py-20">
+      <p class="font-mono text-xs uppercase tracking-widest text-moss mb-2">From the journal</p>
+      <h2 class="font-display text-3xl font-semibold mb-10">Notes from the roastery</h2>
+      <div class="grid sm:grid-cols-2 gap-8">
+        <article class="border-t border-ink/15 pt-5">
+          <h3 class="font-display text-xl font-medium mb-2">Why we wash our Yirgacheffe</h3>
+          <p class="text-sm text-ink/60 leading-relaxed">Washed process trades some body for clarity — here's why that trade is worth it for a floral, high-grown lot like this one.</p>
+        </article>
+        <article class="border-t border-ink/15 pt-5">
+          <h3 class="font-display text-xl font-medium mb-2">A field guide to grind size</h3>
+          <p class="text-sm text-ink/60 leading-relaxed">Too fine and you'll over-extract; too coarse and you're just making brown water. Here's how to dial it in by dripper.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter -->
+  <section id="about" class="max-w-6xl mx-auto px-5 sm:px-8 py-20">
+    <div class="max-w-lg">
+      <h2 class="font-display text-2xl font-semibold mb-2">Get new lots first</h2>
+      <p class="text-sm text-ink/60 mb-5">One email a month when a new origin lands. No spam, unsubscribe anytime.</p>
+      <form id="newsletter-form" onsubmit="submitNewsletter(event)" class="flex gap-2 flex-wrap">
+        <label for="newsletter-email" class="sr-only">Email address</label>
+        <input id="newsletter-email" type="email" required placeholder="you@example.com" class="flex-1 min-w-[200px] border border-ink/20 rounded-full px-4 py-2.5 text-sm bg-cloud focus:outline-none focus:border-moss">
+        <button type="submit" class="bg-ink text-cloud rounded-full px-5 py-2.5 text-sm font-medium hover:bg-moss transition-colors">Subscribe</button>
+      </form>
+      <p id="newsletter-confirm" class="hidden text-sm text-moss mt-3">You're on the list — look out for the next drop.</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- Footer -->
+<footer class="border-t border-ink/10 bg-cloud">
+  <div class="max-w-6xl mx-auto px-5 sm:px-8 py-14 grid sm:grid-cols-4 gap-10">
+    <div class="sm:col-span-2">
+      <p class="font-display text-xl font-semibold mb-3">Cairn</p>
+      <p class="text-sm text-ink/60 max-w-xs leading-relaxed">Gear and beans for people who'd rather pour than pod. Small roastery, shipped everywhere.</p>
+    </div>
+    <div>
+      <p class="text-xs font-mono uppercase tracking-widest text-ink/40 mb-3">Shop</p>
+      <ul class="space-y-2 text-sm text-ink/70">
+        <li><a href="#shop" onclick="filterProducts('gear')" class="hover:text-moss">Gear</a></li>
+        <li><a href="#shop" onclick="filterProducts('beans')" class="hover:text-moss">Beans</a></li>
+        <li><a href="#shop" onclick="filterProducts('accessories')" class="hover:text-moss">Accessories</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="text-xs font-mono uppercase tracking-widest text-ink/40 mb-3">Company</p>
+      <ul class="space-y-2 text-sm text-ink/70">
+        <li><a href="#journal" class="hover:text-moss">Journal</a></li>
+        <li><a href="#about" class="hover:text-moss">About</a></li>
+        <li><a href="#top" class="hover:text-moss">Wholesale</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="border-t border-ink/10">
+    <div class="max-w-6xl mx-auto px-5 sm:px-8 py-5 text-xs text-ink/40 flex flex-wrap justify-between gap-2">
+      <span>© 2026 Cairn Coffee Co.</span>
+      <span>Made for a portfolio, not a real checkout.</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Quick view modal -->
+<div id="quickview-modal" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center">
+  <div class="absolute inset-0 bg-ink/50" onclick="closeQuickView()"></div>
+  <div class="relative bg-parchment rounded-t-3xl sm:rounded-3xl w-full sm:max-w-xl max-h-[92vh] overflow-y-auto p-6 sm:p-8">
+    <button onclick="closeQuickView()" aria-label="Close" class="absolute top-4 right-4 w-9 h-9 flex items-center justify-center rounded-full hover:bg-ink/10">
+      <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+    </button>
+    <div id="qv-content" class="grid sm:grid-cols-2 gap-6 pt-2"></div>
+  </div>
+</div>
+
+<!-- Cart drawer -->
+<div id="cart-drawer" class="hidden fixed inset-0 z-50">
+  <div class="absolute inset-0 bg-ink/50" onclick="closeCart()"></div>
+  <div class="absolute right-0 top-0 h-full w-full sm:w-[420px] bg-parchment flex flex-col">
+    <div class="flex items-center justify-between px-6 py-5 border-b border-ink/10">
+      <h2 class="font-display text-lg font-medium">Your cart</h2>
+      <button onclick="closeCart()" aria-label="Close cart" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-ink/10">
+        <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+      </button>
+    </div>
+    <div id="cart-items" class="flex-1 overflow-y-auto px-6"></div>
+    <div class="border-t border-ink/10 px-6 py-5">
+      <div class="flex justify-between text-sm mb-4">
+        <span class="text-ink/60">Subtotal</span>
+        <span id="cart-subtotal" class="font-mono">$0.00</span>
+      </div>
+      <button onclick="openCheckout()" class="w-full bg-ink text-cloud rounded-full py-3 text-sm font-medium hover:bg-moss transition-colors">Checkout</button>
+    </div>
+  </div>
+</div>
+
+<!-- Checkout modal -->
+<div id="checkout-modal" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center">
+  <div class="absolute inset-0 bg-ink/50" onclick="closeCheckout()"></div>
+  <div class="relative bg-parchment rounded-t-3xl sm:rounded-3xl w-full sm:max-w-md max-h-[92vh] overflow-y-auto p-6 sm:p-8">
+    <button onclick="closeCheckout()" aria-label="Close" class="absolute top-4 right-4 w-9 h-9 flex items-center justify-center rounded-full hover:bg-ink/10">
+      <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+    </button>
+
+    <div id="checkout-form-view">
+      <h2 class="font-display text-2xl font-semibold mb-5">Checkout</h2>
+      <div id="checkout-summary" class="mb-4"></div>
+      <div class="border-t border-ink/10 pt-3 mb-6 space-y-1.5">
+        <div class="flex justify-between text-sm"><span class="text-ink/60">Subtotal</span><span id="checkout-subtotal" class="font-mono">$0.00</span></div>
+        <div class="flex justify-between text-sm"><span class="text-ink/60">Shipping</span><span id="checkout-shipping" class="font-mono">$0.00</span></div>
+        <div class="flex justify-between text-base font-medium pt-1"><span>Total</span><span id="checkout-total" class="font-mono">$0.00</span></div>
+      </div>
+
+      <form onsubmit="placeOrder(event)" class="space-y-4">
+        <div>
+          <label for="co-name" class="text-xs text-ink/60 block mb-1">Full name</label>
+          <input id="co-name" type="text" class="w-full border border-ink/20 rounded-lg px-3 py-2.5 text-sm bg-cloud focus:outline-none focus:border-moss">
+          <p id="co-name-err" class="hidden text-xs text-rust mt-1">Enter your name</p>
+        </div>
+        <div>
+          <label for="co-email" class="text-xs text-ink/60 block mb-1">Email</label>
+          <input id="co-email" type="email" class="w-full border border-ink/20 rounded-lg px-3 py-2.5 text-sm bg-cloud focus:outline-none focus:border-moss">
+          <p id="co-email-err" class="hidden text-xs text-rust mt-1">Enter a valid email</p>
+        </div>
+        <div>
+          <label for="co-address" class="text-xs text-ink/60 block mb-1">Shipping address</label>
+          <input id="co-address" type="text" class="w-full border border-ink/20 rounded-lg px-3 py-2.5 text-sm bg-cloud focus:outline-none focus:border-moss">
+          <p id="co-address-err" class="hidden text-xs text-rust mt-1">Enter a shipping address</p>
+        </div>
+        <button type="submit" class="w-full bg-ink text-cloud rounded-full py-3 text-sm font-medium hover:bg-moss transition-colors mt-2">Place order</button>
+        <p class="text-xs text-ink/40 text-center">Demo checkout — no payment is processed.</p>
+      </form>
+    </div>
+
+    <div id="checkout-success-view" class="hidden text-center py-6">
+      <svg viewBox="0 0 32 32" class="w-12 h-12 mx-auto mb-4 text-moss" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="16" cy="16" r="13"/><path d="M10 16 L14 20 L22 11"/></svg>
+      <h2 class="font-display text-2xl font-semibold mb-2">Order placed</h2>
+      <p class="text-sm text-ink/60 mb-1">Order <span id="order-number" class="font-mono text-ink"></span></p>
+      <p class="text-sm text-ink/60 mb-6">A confirmation would normally land in your inbox shortly.</p>
+      <button onclick="closeCheckout()" class="bg-ink text-cloud rounded-full px-6 py-3 text-sm font-medium hover:bg-moss transition-colors">Continue shopping</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const PRODUCTS = [
+    { id: 1, name: "Basalt Dripper", category: "gear", price: 38, tint: "moss", icon: "dripper", tag: "Ceramic · 1–2 cup", desc: "A matte-glazed ceramic dripper with a wide single hole for a slower, steadier pour. Fits most standard filters." },
+    { id: 2, name: "Long Neck Kettle", category: "gear", price: 148, tint: "brass", icon: "kettle", tag: "Electric · Temp control", desc: "Gooseneck spout for a controlled pour, with hold-temperature settings for six roast styles." },
+    { id: 3, name: "Field Grinder", category: "gear", price: 89, tint: "rust", icon: "grinder", tag: "Hand · Steel burrs", desc: "Conical steel burrs with thirty click stops, from espresso-fine to French-press-coarse." },
+    { id: 4, name: "Table Scale", category: "gear", price: 54, tint: "moss", icon: "scale", tag: "0.1g precision", desc: "A built-in timer and drip-rate readout, small enough to live on the counter permanently." },
+    { id: 5, name: "Double-Wall Carafe", category: "gear", price: 42, tint: "brass", icon: "carafe", tag: "Glass · 600ml", desc: "Borosilicate glass with a wood collar, so it goes straight from dripper to table." },
+    { id: 6, name: "Yirgacheffe, Ethiopia", category: "beans", price: 19, tint: "rust", icon: "beanbag", tag: "Washed · 340g", desc: "Jasmine, bergamot, ripe peach. Grown at 1,900m by the Gedeb cooperative.", notes: ["Jasmine","Bergamot","Peach"] },
+    { id: 7, name: "Huila, Colombia", category: "beans", price: 17, tint: "moss", icon: "beanbag", tag: "Honey · 340g", desc: "Brown sugar, red apple, cocoa. A family lot from the southern highlands.", notes: ["Brown sugar","Red apple","Cocoa"] },
+    { id: 8, name: "Kayanza, Burundi", category: "beans", price: 21, tint: "brass", icon: "beanbag", tag: "Natural · 340g", desc: "Blackberry, wine, dark chocolate. Small-lot, dried on raised beds for 21 days.", notes: ["Blackberry","Wine","Dark chocolate"] },
+    { id: 9, name: "Toraja, Indonesia", category: "beans", price: 18, tint: "rust", icon: "beanbag", tag: "Wet-hulled · 340g", desc: "Cedar, tobacco, dark fruit. Full body, low acidity, ages well past six months.", notes: ["Cedar","Tobacco","Dark fruit"] },
+    { id: 10, name: "Cloth Filters", category: "accessories", price: 16, tint: "moss", icon: "filter", tag: "Reusable · Pack of 2", desc: "Unbleached cotton, cuts paper waste, softens flavour compared to paper filters." },
+    { id: 11, name: "Cupping Spoon", category: "accessories", price: 12, tint: "brass", icon: "spoon", tag: "Brass", desc: "Deep bowl for slurping and tasting, the same shape roasters use to grade beans." },
+    { id: 12, name: "Bean Canister", category: "accessories", price: 34, tint: "rust", icon: "canister", tag: "Ceramic · Airtight", desc: "A one-way valve lid keeps CO2 out and freshness in for up to a month." }
+  ];
+
+  const TINT_CLASS = { moss: 'bg-moss-tint', brass: 'bg-brass-tint', rust: 'bg-rust-tint' };
+  const ICON_PATHS = {
+    dripper:  '<path d="M12 14 L36 14 L24 38 Z"/><ellipse cx="24" cy="14" rx="12" ry="3"/><line x1="24" y1="38" x2="24" y2="42"/>',
+    kettle:   '<path d="M14 20 Q14 12 24 12 Q34 12 34 20 L34 29 Q34 36 24 36 Q14 36 14 29 Z"/><path d="M34 18 Q43 17 42 9"/><path d="M18 12 Q18 6 24 6 Q30 6 30 12"/>',
+    grinder:  '<rect x="16" y="15" width="16" height="23" rx="2"/><circle cx="24" cy="9" r="4"/><line x1="24" y1="15" x2="24" y2="13"/>',
+    scale:    '<rect x="9" y="27" width="30" height="8" rx="2"/><rect x="18" y="18" width="12" height="8" rx="1"/>',
+    carafe:   '<path d="M15 13 L15 28 Q15 36 24 36 Q33 36 33 28 L33 13"/><line x1="13" y1="13" x2="35" y2="13"/><path d="M33 19 Q41 19 41 25 Q41 31 33 29"/>',
+    beanbag:  '<path d="M16 16 L14 38 Q14 40 16 40 L32 40 Q34 40 34 38 L32 16 Z"/><path d="M16 16 L20 9 L28 9 L32 16"/><line x1="24" y1="9" x2="24" y2="5"/>',
+    filter:   '<ellipse cx="24" cy="15" rx="14" ry="4"/><ellipse cx="24" cy="22" rx="14" ry="4"/><ellipse cx="24" cy="29" rx="14" ry="4"/>',
+    spoon:    '<ellipse cx="24" cy="15" rx="8" ry="10"/><line x1="24" y1="25" x2="24" y2="41"/>',
+    canister: '<rect x="13" y="17" width="22" height="21" rx="3"/><line x1="11" y1="17" x2="37" y2="17"/><rect x="19" y="10" width="10" height="7" rx="1"/>'
+  };
+
+  function iconSVG(type, extraClass){
+    return '<svg viewBox="0 0 48 48" class="' + (extraClass||'') + '" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (ICON_PATHS[type]||'') + '</svg>';
+  }
+
+  let cart = {};
+  let currentFilter = 'all';
+  let qvId = null;
+  let qvQty = 1;
+
+  function productCard(p){
+    return '' +
+    '<div class="border border-ink/10 rounded-2xl overflow-hidden bg-cloud flex flex-col transition-shadow hover:shadow-lg group">' +
+      '<button class="relative ' + TINT_CLASS[p.tint] + ' aspect-[4/3] flex items-center justify-center text-ink/70 w-full" onclick="openQuickView(' + p.id + ')" aria-label="View ' + p.name + '">' +
+        iconSVG(p.icon, 'w-16 h-16 transition-transform duration-300 group-hover:scale-110') +
+      '</button>' +
+      '<div class="p-4 flex flex-col flex-1">' +
+        '<p class="font-mono text-[11px] uppercase tracking-wide text-ink/50 mb-1">' + p.tag + '</p>' +
+        '<h3 class="font-display font-medium leading-snug mb-1">' + p.name + '</h3>' +
+        '<p class="text-sm text-ink/60 mb-3 line-clamp-2 flex-1">' + p.desc + '</p>' +
+        '<div class="flex items-center justify-between mt-auto pt-1">' +
+          '<span class="font-mono text-sm">$' + p.price + '</span>' +
+          '<button onclick="addToCart(' + p.id + ')" class="text-xs font-medium border border-ink/20 rounded-full px-3 py-1.5 hover:bg-ink hover:text-cloud transition-colors">Add to cart</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  function filterProducts(cat){
+    currentFilter = cat;
+    document.querySelectorAll('.filter-tab').forEach(function(btn){
+      const active = btn.dataset.filter === cat;
+      btn.classList.toggle('bg-ink', active);
+      btn.classList.toggle('text-cloud', active);
+      btn.classList.toggle('text-ink/60', !active);
+      btn.classList.toggle('border', !active);
+      btn.classList.toggle('border-ink/15', !active);
+    });
+    const list = PRODUCTS.filter(function(p){ return cat === 'all' || p.category === cat; });
+    document.getElementById('product-grid').innerHTML = list.map(productCard).join('');
+  }
+
+  function cartCount(){
+    return Object.values(cart).reduce(function(a,b){ return a+b; }, 0);
+  }
+  function cartTotal(){
+    return Object.entries(cart).reduce(function(sum, entry){
+      const p = PRODUCTS.find(function(pr){ return pr.id == entry[0]; });
+      return sum + (p ? p.price * entry[1] : 0);
+    }, 0);
+  }
+  function addToCart(id, qty){
+    qty = qty || 1;
+    cart[id] = (cart[id] || 0) + qty;
+    updateCartUI();
+  }
+  function changeQty(id, delta){
+    if(!cart[id]) return;
+    cart[id] += delta;
+    if(cart[id] <= 0) delete cart[id];
+    updateCartUI();
+  }
+  function removeFromCart(id){
+    delete cart[id];
+    updateCartUI();
+  }
+  function updateCartUI(){
+    const count = cartCount();
+    const badge = document.getElementById('cart-count');
+    badge.textContent = count;
+    badge.classList.toggle('hidden', count === 0);
+    renderCartItems();
+  }
+  function renderCartItems(){
+    const container = document.getElementById('cart-items');
+    const entries = Object.entries(cart);
+    if(entries.length === 0){
+      container.innerHTML = '<p class="text-sm text-ink/50 py-10 text-center">Your cart is empty.</p>';
+    } else {
+      container.innerHTML = entries.map(function(entry){
+        const p = PRODUCTS.find(function(pr){ return pr.id == entry[0]; });
+        const qty = entry[1];
+        return '' +
+        '<div class="flex gap-3 py-4 border-b border-ink/10">' +
+          '<div class="w-14 h-14 rounded-lg ' + TINT_CLASS[p.tint] + ' flex items-center justify-center flex-shrink-0 text-ink/70">' + iconSVG(p.icon, 'w-7 h-7') + '</div>' +
+          '<div class="flex-1 min-w-0">' +
+            '<p class="text-sm font-medium truncate">' + p.name + '</p>' +
+            '<p class="font-mono text-xs text-ink/50 mb-2">$' + p.price + '</p>' +
+            '<div class="flex items-center gap-2">' +
+              '<button onclick="changeQty(' + p.id + ',-1)" aria-label="Decrease quantity" class="w-6 h-6 border border-ink/20 rounded-full text-xs leading-none">−</button>' +
+              '<span class="text-sm w-4 text-center">' + qty + '</span>' +
+              '<button onclick="changeQty(' + p.id + ',1)" aria-label="Increase quantity" class="w-6 h-6 border border-ink/20 rounded-full text-xs leading-none">+</button>' +
+              '<button onclick="removeFromCart(' + p.id + ')" class="ml-auto text-xs text-ink/40 hover:text-rust">Remove</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+    document.getElementById('cart-subtotal').textContent = '$' + cartTotal().toFixed(2);
+  }
+
+  function openCart(){
+    document.getElementById('cart-drawer').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeCart(){
+    document.getElementById('cart-drawer').classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  function openQuickView(id){
+    const p = PRODUCTS.find(function(pr){ return pr.id === id; });
+    if(!p) return;
+    qvId = id; qvQty = 1;
+    const notesHTML = p.notes ? '<div class="flex gap-2 flex-wrap mb-4">' + p.notes.map(function(n){ return '<span class="text-xs font-mono border border-ink/20 rounded-full px-2.5 py-1">' + n + '</span>'; }).join('') + '</div>' : '';
+    document.getElementById('qv-content').innerHTML = '' +
+      '<div class="' + TINT_CLASS[p.tint] + ' rounded-2xl aspect-square flex items-center justify-center text-ink/70">' + iconSVG(p.icon, 'w-28 h-28') + '</div>' +
+      '<div>' +
+        '<p class="font-mono text-xs uppercase tracking-wide text-ink/50 mb-2">' + p.tag + '</p>' +
+        '<h2 class="font-display text-2xl font-medium mb-2">' + p.name + '</h2>' +
+        '<p class="text-ink/70 text-sm leading-relaxed mb-4">' + p.desc + '</p>' +
+        notesHTML +
+        '<p class="font-mono text-xl mb-4">$' + p.price + '</p>' +
+        '<div class="flex items-center gap-3 mb-4">' +
+          '<button onclick="changeQvQty(-1)" aria-label="Decrease quantity" class="w-8 h-8 border border-ink/20 rounded-full">−</button>' +
+          '<span id="qv-qty" class="w-6 text-center">1</span>' +
+          '<button onclick="changeQvQty(1)" aria-label="Increase quantity" class="w-8 h-8 border border-ink/20 rounded-full">+</button>' +
+        '</div>' +
+        '<button onclick="addQvToCart()" class="w-full bg-ink text-cloud rounded-full py-3 font-medium hover:bg-moss transition-colors">Add to cart</button>' +
+      '</div>';
+    document.getElementById('quickview-modal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+  function changeQvQty(delta){
+    qvQty = Math.max(1, qvQty + delta);
+    document.getElementById('qv-qty').textContent = qvQty;
+  }
+  function addQvToCart(){
+    addToCart(qvId, qvQty);
+    closeQuickView();
+    openCart();
+  }
+  function closeQuickView(){
+    document.getElementById('quickview-modal').classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  function openCheckout(){
+    if(cartCount() === 0) return;
+    document.getElementById('checkout-summary').innerHTML = Object.entries(cart).map(function(entry){
+      const p = PRODUCTS.find(function(pr){ return pr.id == entry[0]; });
+      const qty = entry[1];
+      return '<div class="flex justify-between text-sm py-1"><span class="text-ink/70">' + p.name + ' × ' + qty + '</span><span class="font-mono">$' + (p.price*qty).toFixed(2) + '</span></div>';
+    }).join('');
+    const subtotal = cartTotal();
+    const shipping = subtotal > 0 ? 6 : 0;
+    document.getElementById('checkout-subtotal').textContent = '$' + subtotal.toFixed(2);
+    document.getElementById('checkout-shipping').textContent = '$' + shipping.toFixed(2);
+    document.getElementById('checkout-total').textContent = '$' + (subtotal + shipping).toFixed(2);
+    document.getElementById('checkout-form-view').classList.remove('hidden');
+    document.getElementById('checkout-success-view').classList.add('hidden');
+    closeCart();
+    document.getElementById('checkout-modal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeCheckout(){
+    document.getElementById('checkout-modal').classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+  function placeOrder(e){
+    e.preventDefault();
+    const name = document.getElementById('co-name').value.trim();
+    const email = document.getElementById('co-email').value.trim();
+    const address = document.getElementById('co-address').value.trim();
+    const emailValid = /\S+@\S+\.\S+/.test(email);
+    let valid = true;
+    toggleError('co-name-err', !name); if(!name) valid = false;
+    toggleError('co-email-err', !emailValid); if(!emailValid) valid = false;
+    toggleError('co-address-err', !address); if(!address) valid = false;
+    if(!valid) return;
+    document.getElementById('order-number').textContent = 'CN-' + Math.floor(10000 + Math.random()*89999);
+    document.getElementById('checkout-form-view').classList.add('hidden');
+    document.getElementById('checkout-success-view').classList.remove('hidden');
+    cart = {};
+    updateCartUI();
+  }
+  function toggleError(id, show){
+    document.getElementById(id).classList.toggle('hidden', !show);
+  }
+
+  function submitNewsletter(e){
+    e.preventDefault();
+    document.getElementById('newsletter-form').classList.add('hidden');
+    document.getElementById('newsletter-confirm').classList.remove('hidden');
+  }
+
+  function toggleMobileMenu(){
+    const menu = document.getElementById('mobile-menu');
+    const btn = document.getElementById('mobile-menu-btn');
+    const willOpen = menu.classList.contains('hidden');
+    menu.classList.toggle('hidden');
+    btn.setAttribute('aria-expanded', String(willOpen));
+  }
+
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){
+      closeQuickView(); closeCart(); closeCheckout();
+    }
+  });
+
+  filterProducts('all');
+</script>
+</body>
+</html>
